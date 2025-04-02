@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brief.url | Careers</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .careers-hero {
+      background-color: var(--light-gray);
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .careers-hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .careers-hero p {
+      font-size: 20px;
+      color: var(--medium-gray);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .positions-section {
+      padding: 80px 0;
+    }
+
+    .positions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .position-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease;
+    }
+
+    .position-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .position-type {
+      color: var(--primary-color);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .position-title {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .position-description {
+      color: var(--medium-gray);
+      margin-bottom: 20px;
+    }
+
+    .apply-button {
+      display: inline-block;
+      background-color: #34c759;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.2s ease;
+    }
+
+    .apply-button:hover {
+      background-color: #2fb350;
+    }
+
+    .no-positions {
+      text-align: center;
+      padding: 40px;
+      background: var(--light-gray);
+      border-radius: 12px;
+      margin-top: 40px;
+    }
+
+    .contact-button {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 20px;
+      transition: background-color 0.2s ease;
+    }
+
+    .contact-button:hover {
+      background-color: #005BBB;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="container">
+    <header>
+      <a href="/" class="logo">Brief<span>.</span>url</a>
+      <nav>
+        <ul>
+          <li><a href="/#features">Features</a></li>
+          <li><a href="/payment.html">Pricing</a></li>
+          <li><a href="/payment.html">API</a></li>
+          <!-- <li><a href="/dashboard">Login</a></li> -->
+        </ul>
+      </nav>
+    </header>
+  </div>
+
+  <!-- Careers Hero -->
+  <section class="careers-hero">
+    <div class="container">
+      <h1>Join Our Team</h1>
+      <p>Help us shape the future of link sharing and make the internet more accessible.</p>
+    </div>
+  </section>
+
+  <!-- Open Positions -->
+  <section class="positions-section">
+    <div class="container">
+      <div class="positions-grid">
+        <div class="position-card">
+          <p class="position-type">Full-time • Remote</p>
+          <h2 class="position-title">Frontend Developer</h2>
+          <p class="position-description">Join us in creating intuitive, responsive user interfaces that millions of users will interact with daily.</p>
+          <a href="/contact.html" class="apply-button">Apply Now</a>
+        </div>
+
+        <div class="position-card">
+          <p class="position-type">Full-time • Remote</p>
+          <h2 class="position-title">Backend Engineer</h2>
+          <p class="position-description">Help build scalable systems that power millions of shortened URLs and handle complex data processing.</p>
+          <a href="/contact.html" class="apply-button">Apply Now</a>
+        </div>
+
+        <div class="position-card">
+          <p class="position-type">Full-time • Remote</p>
+          <h2 class="position-title">DevOps Engineer</h2>
+          <p class="position-description">Ensure our infrastructure runs smoothly and efficiently while implementing best practices.</p>
+          <a href="/contact.html" class="apply-button">Apply Now</a>
+        </div>
+      </div>
+
+      <div class="no-positions">
+        <h3>Don't see a position that matches your skills?</h3>
+        <p>We're always looking for talented individuals to join our team.</p>
+        <a href="/contact.html" class="contact-button">Contact Us</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <!-- Include the standard footer here -->
+</body>
+</html> 

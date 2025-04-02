@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Brief.url | Get in Touch</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="/" class="logo">Brief<span>.</span>url</a>
+      <nav>
+        <ul>
+          <li><a href="/#features">Features</a></li>
+          <li><a href="/pricing.html">Pricing</a></li>
+          <li><a href="/api.html">API</a></li>
+          <!-- <li><a href="/dashboard">Login</a></li> -->
+        </ul>
+      </nav>
+    </header>
+  </div>
+  
+  <section class="contact-section">
+    <div class="container">
+      <h1>Get in Touch</h1>
+      <p class="subtitle">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+      
+      <div class="contact-container">
+        <div class="contact-info">
+          <div class="info-item">
+            <h3>Email</h3>
+            <p>support@brief.url</p>
+          </div>
+          
+          <div class="info-item">
+            <h3>Follow Us</h3>
+            <div class="social-links">
+              <a href="#" class="social-link">Twitter</a>
+              <a href="#" class="social-link">LinkedIn</a>
+              <a href="#" class="social-link">GitHub</a>
+            </div>
+          </div>
+          
+          <div class="support-card">
+            <h3>Need help?</h3>
+            <p>Check out our <a href="/help">Help Center</a> for quick answers to common questions.</p>
+          </div>
+        </div>
+        
+        <div class="contact-form">
+          <form id="contactForm">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <input type="text" id="subject" name="subject" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="5" required></textarea>
+            </div>
+            
+            <button type="submit" class="submit-button">Send Message</button>
+          </form>
+          
+          <div id="formSuccess" class="form-success">
+            <div class="success-icon">✓</div>
+            <h3>Message Sent!</h3>
+            <p>Thank you for reaching out. We'll get back to you soon.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <footer>
+    <div class="container">
+      <!-- Same footer as index.html -->
+    </div>
+  </footer>
+  
+  <style>
+    .contact-section {
+      padding: 80px 0;
+    }
+    
+    .contact-section h1 {
+      font-size: 48px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    
+    .subtitle {
+      text-align: center;
+      font-size: 20px;
+      color: var(--medium-gray);
+      margin-bottom: 48px;
+    }
+    
+    .contact-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 48px;
+    }
+    
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    
+    .info-item h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    
+    .info-item p {
+      color: var(--medium-gray);
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 16px;
+    }
+    
+    .social-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    
+    .social-link:hover {
+      color: #005BBB;
+    }
+    
+    .support-card {
+      background-color: var(--light-gray);
+      padding: 24px;
+      border-radius: 12px;
+      margin-top: 16px;
+    }
+    
+    .support-card h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    
+    .support-card p {
+      color: var(--medium-gray);
+    }
+    
+    .support-card a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .contact-form {
+      background-color: white;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--light-gray);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.2s ease;
+    }
+    
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+    
+    .submit-button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    
+    .submit-button:hover {
+      background-color: #005BBB;
+    }
+    
+    .form-success {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      border-radius: 16px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 32px;
+    }
+    
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background-color: #34c759;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 32px;
+      margin-bottom: 24px;
+    }
+    
+    .form-success h3 {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    
+    .form-success p {
+      color: var(--medium-gray);
+    }
+    
+    @media (max-width: 768px) {
+      .contact-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .contact-info {
+        order: 2;
+      }
+      
+      .contact-form {
+        order: 1;
+        margin-bottom: 32px;
+      }
+    }
+  </style>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const contactForm = document.getElementById('contactForm');
+      const formSuccess = document.getElementById('formSuccess');
+      
+      if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          
+          // In a real application, you would send the form data to your server here
+          // For now, we'll just show the success message
+          
+          // Simulate form submission delay
+          setTimeout(() => {
+            contactForm.style.display = 'none';
+            formSuccess.style.display = 'flex';
+          }, 1000);
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

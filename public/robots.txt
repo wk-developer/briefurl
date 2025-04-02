@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /blog.html
+Allow: /about.html
+Allow: /contact.html
+Allow: /careers.html
+Allow: /legal.html
+Allow: /developers.html
+Allow: /payment.html
+Allow: /styles.css
+
+# Disallow unnecessary files/directories
+Disallow: /js/
+Disallow: /404.html
+Disallow: /frontend.js
+
+# Sitemap
+Sitemap: https://briefurl.online/sitemap.xml 

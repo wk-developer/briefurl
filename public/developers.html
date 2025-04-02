@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brief.url for Developers</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="/" class="logo">Brief<span>.</span>url</a>
+      <nav>
+        <ul>
+          <li><a href="/#features">Features</a></li>
+          <li><a href="/pricing.html">Pricing</a></li>
+          <li><a href="/api.html">API</a></li>
+          <!-- <li><a href="/dashboard">Login</a></li> -->
+        </ul>
+      </nav>
+    </header>
+  </div>
+  
+  <section class="developer-section">
+    <div class="container">
+      <h1>Meet the Developer</h1>
+      
+      <div class="developer-profile">
+        <div class="developer-info">
+          <h2>WiseKing</h2>
+          <p class="developer-title">Full Stack Developer & Innovator</p>
+          
+          <div class="developer-bio">
+            <p>Hello, I'm the developer behind Brief.url. I'm passionate about creating clean, efficient web applications that solve real problems. With a background in full-stack development, I enjoy working on both frontend and backend technologies.</p>
+            
+            <p>Brief.url was born from my desire to create a URL shortener that combines simplicity with powerful features. I believe that good tools should be intuitive yet powerful – giving users exactly what they need without unnecessary complexity.</p>
+            
+            <p>My development philosophy centers around three core principles:</p>
+            
+            <ul class="philosophy-list">
+              <li><strong>User-First Design:</strong> Everything starts with the user experience</li>
+              <li><strong>Clean Code:</strong> Well-structured, maintainable code is essential</li>
+              <li><strong>Continuous Innovation:</strong> Always learning, always improving</li>
+            </ul>
+            
+            <p>I'm constantly working to improve Brief.url and would love to hear your feedback and suggestions.</p>
+            
+            <div class="connect-section">
+              <h3>Let's Connect</h3>
+              <p>If you're interested in my work or want to collaborate on a project, feel free to reach out!</p>
+              <a href="https://buymeacoffee.com/wiseking/e/389917" class="support-button">Support My Work</a>
+              <a href="/contact.html" class="contact-button">Get in Touch</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tech-stack">
+          <h3>Technologies I Work With</h3>
+          <div class="tech-icons">
+            <div class="tech-icon">JavaScript</div>
+            <div class="tech-icon">Node.js</div>
+            <div class="tech-icon">Express</div>
+            <div class="tech-icon">MongoDB</div>
+            <div class="tech-icon">React</div>
+            <div class="tech-icon">HTML5/CSS3</div>
+            <div class="tech-icon">Git</div>
+            <div class="tech-icon">AWS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <footer>
+    <div class="container">
+      <!-- Same footer as index.html -->
+    </div>
+  </footer>
+  
+  <style>
+    .developer-section {
+      padding: 80px 0;
+    }
+    
+    .developer-section h1 {
+      font-size: 48px;
+      margin-bottom: 48px;
+      text-align: center;
+    }
+    
+    .developer-profile {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 48px;
+    }
+    
+    .developer-info h2 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    
+    .developer-title {
+      font-size: 18px;
+      color: var(--medium-gray);
+      margin-bottom: 24px;
+    }
+    
+    .developer-bio p {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--dark-gray);
+      margin-bottom: 24px;
+    }
+    
+    .philosophy-list {
+      margin-left: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .philosophy-list li {
+      margin-bottom: 12px;
+      font-size: 16px;
+      color: var(--dark-gray);
+    }
+    
+    .connect-section {
+      margin-top: 32px;
+      padding: 24px;
+      background-color: var(--light-gray);
+      border-radius: 12px;
+    }
+    
+    .connect-section h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    
+    .connect-section p {
+      margin-bottom: 16px;
+    }
+    
+    .support-button, .contact-button {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      margin-right: 12px;
+      transition: background-color 0.2s ease;
+    }
+    
+    .support-button {
+      background-color: #ff813f;
+      color: white;
+    }
+    
+    .support-button:hover {
+      background-color: #e66a2e;
+    }
+    
+    .contact-button {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .contact-button:hover {
+      background-color: #005BBB;
+    }
+    
+    .tech-stack {
+      background-color: white;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    .tech-stack h3 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    
+    .tech-icons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    
+    .tech-icon {
+      background-color: var(--light-gray);
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    @media (max-width: 768px) {
+      .developer-profile {
+        grid-template-columns: 1fr;
+      }
+      
+      .tech-stack {
+        order: -1;
+      }
+    }
+  </style>
+</body>
+</html> 

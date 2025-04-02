@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brief.url | Less link. More impact.</title>
+  <style>
+    /* Copy all your CSS here from the original index.html */
+    :root {
+      --primary-color: #0071E3;
+      --light-gray: #F5F5F7;
+      --medium-gray: #86868B;
+      --dark-gray: #1D1D1F;
+    }
+    
+    /* ... rest of your CSS ... */
+    
+    /* Make copy button green */
+    .copy-button {
+      background-color: #34c759; /* Apple green color */
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+    }
+    
+    .copy-button:hover {
+      background-color: #30b352; /* Slightly darker green on hover */
+    }
+    
+    /* Make download button green */
+    .download-button {
+      background-color: #34c759; /* Apple green color */
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+    }
+    
+    .download-button:hover {
+      background-color: #30b352; /* Slightly darker green on hover */
+    }
+    
+    /* Fix QR code container spacing and size */
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: white;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      width: 200px; /* Fixed width to prevent overflow */
+    }
+    
+    #qrcode {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      width: 100%; /* Control the width */
+      height: auto; /* Let height adjust automatically */
+      max-width: 150px; /* Cap maximum size */
+    }
+    
+    #qrcode img {
+      width: 100%; /* Make image fit container */
+      height: auto;
+    }
+    
+    .qr-title {
+      font-size: 14px;
+      color: var(--medium-gray);
+      margin: 8px 0;
+      text-align: center;
+    }
+    
+    /* Improve result container layout */
+    .result-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start; /* Changed from center to flex-start */
+      gap: 20px;
+    }
+    
+    .result-url {
+      flex: 1;
+      background-color: white;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      gap: 12px;
+    }
+    
+    .short-url {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--primary-color);
+      word-break: break-all; /* Allow long URLs to break */
+    }
+    
+    @media (max-width: 768px) {
+      .result-content {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .result-url, .qr-container {
+        width: 100%;
+      }
+      
+      .qr-container {
+        max-width: 200px; /* Control max width on mobile */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="/" class="logo">Brief<span>.</span>url</a>
+      <nav>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#api">API</a></li>
+          <li><a href="/dashboard">Login</a></li>
+        </ul>
+      </nav>
+    </header>
+  </div>
+  
+  <section class="hero">
+    <h1>Less link. More impact.</h1>
+    <p>Create shorter, more memorable links with our sleek, simple URL shortener.</p>
+    
+    <div class="url-input-container">
+      <form action="/shorten" method="POST">
+        <input type="text" name="url" class="url-input" placeholder="Paste your long URL here..." aria-label="Enter URL to shorten">
+        <button type="submit" class="shorten-button">Shorten</button>
+      </form>
+    </div>
+    
+    <% if(locals.shortUrl) { %>
+    <div class="result-container active" id="result">
+      <p class="result-title">Your shortened URL</p>
+      <div class="result-content">
+        <div class="result-url">
+          <span class="short-url"><%= shortUrl %></span>
+          <button class="copy-button">Copy</button>
+        </div>
+        <div class="qr-container">
+          <div id="qrcode"></div>
+          <p class="qr-title">Your QR</p>
+          <button class="download-button">Download QR</button>
+        </div>
+      </div>
+    </div>
+    <% } %>
+    
+    <% if(locals.error) { %>
+    <div class="result-container active" id="error">
+      <p class="result-title">Error</p>
+      <div class="result-url" style="color: red;">
+        <%= error %>
+      </div>
+    </div>
+    <% } %>
+  </section>
+  
+  <!-- Rest of your HTML content -->
+  <section class="features" id="features">
+    <!-- Features section content -->
+  </section>
+  
+  <footer>
+    <!-- Footer content -->
+  </footer>
+  
+  <script>
+    // Simple script to handle copy button
+    document.addEventListener('DOMContentLoaded', () => {
+      const copyButton = document.querySelector('.copy-button');
+      if (copyButton) {
+        copyButton.addEventListener('click', async () => {
+          try {
+            const shortUrl = document.querySelector('.short-url').textContent;
+            await navigator.clipboard.writeText(shortUrl);
+            copyButton.textContent = 'Copied!';
+            setTimeout(() => {
+              copyButton.textContent = 'Copy';
+            }, 2000);
+          } catch (error) {
+            alert('Failed to copy URL');
+            console.error('Error:', error);
+          }
+        });
+      }
+    });
+
+    // Generate QR code for the shortened URL
+    document.addEventListener('DOMContentLoaded', () => {
+      const shortUrl = "<%= shortUrl %>";
+      const qrCodeDiv = document.getElementById('qrcode');
+      const downloadButton = document.querySelector('.download-button');
+      
+      // Function to generate QR code
+      function generateQRCode(url) {
+        // Generate QR code
+        const qr = qrcode(0, 'M');
+        qr.addData(url);
+        qr.make();
+        
+        // Create QR code image
+        const qrImage = qr.createImgTag(5);
+        qrCodeDiv.innerHTML = qrImage;
+      }
+      
+      // Function to download QR code
+      function downloadQRCode(url) {
+        const canvas = document.createElement('canvas');
+        const size = 200; // QR code size
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        
+        // Generate QR code for canvas
+        const qr = qrcode(0, 'M');
+        qr.addData(url);
+        qr.make();
+        
+        // Get QR code as image
+        const img = new Image();
+        img.src = qrCodeDiv.querySelector('img').src;
+        
+        img.onload = () => {
+          // Draw QR code on canvas
+          ctx.drawImage(img, 0, 0, size, size);
+          
+          // Create download link
+          const a = document.createElement('a');
+          a.download = 'qrcode.png';
+          a.href = canvas.toDataURL('image/png');
+          a.click();
+        };
+      }
+      
+      // Generate QR code
+      generateQRCode(shortUrl);
+      
+      // Add download handler
+      if (downloadButton) {
+        downloadButton.onclick = () => downloadQRCode(shortUrl);
+      }
+    });
+  </script>
+</body>
+</html>

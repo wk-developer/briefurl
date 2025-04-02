@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brief.url | Purchase Options</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="/" class="logo">Brief<span>.</span>url</a>
+      <nav>
+        <ul>
+          <li><a href="/#features">Features</a></li>
+          <li><a href="/pricing.html">Pricing</a></li>
+          <li><a href="/api.html">API</a></li>
+          <!-- <li><a href="/dashboard">Login</a></li> -->
+        </ul>
+      </nav>
+    </header>
+  </div>
+  
+  <section class="payment-section">
+    <div class="container">
+      <h1>Get Access to Brief.url Resources</h1>
+      <p class="subtitle">Choose what you need and support the developer</p>
+      
+      <div class="options-grid">
+        <div class="option-card">
+          <h2>API Access</h2>
+          <p>Get full access to the Brief.url API for your applications</p>
+          <ul>
+            <li>Unlimited API calls</li>
+            <li>Developer documentation</li>
+            <li>Implementation examples</li>
+            <li>Email support</li>
+          </ul>
+          <a href="https://buymeacoffee.com/wiseking/e/389917" class="cta-button">Get API Access</a>
+        </div>
+        
+        <div class="option-card">
+          <h2>Source Code</h2>
+          <p>Get the complete source code to host Brief.url yourself</p>
+          <ul>
+            <li>Full source code</li>
+            <li>Installation instructions</li>
+            <li>Customization guide</li>
+            <li>Free updates</li>
+          </ul>
+          <a href="https://buymeacoffee.com/wiseking/e/389917" class="cta-button">Get Source Code</a>
+        </div>
+        
+        <div class="option-card featured">
+          <div class="badge">Best Value</div>
+          <h2>Complete Package</h2>
+          <p>Everything you need to make the most of Brief.url</p>
+          <ul>
+            <li>API Access</li>
+            <li>Full source code</li>
+            <li>Premium support</li>
+            <li>Future updates</li>
+          </ul>
+          <a href="https://buymeacoffee.com/wiseking/e/389917" class="cta-button">Get Complete Package</a>
+        </div>
+      </div>
+      
+      <div class="support-message">
+        <p>Your purchase supports independent development. Thank you for your contribution!</p>
+      </div>
+    </div>
+  </section>
+  
+  <footer>
+    <div class="container">
+      <!-- Same footer as index.html -->
+    </div>
+  </footer>
+  
+  <style>
+    .payment-section {
+      padding: 80px 0;
+      background-color: var(--light-gray);
+    }
+    
+    .subtitle {
+      text-align: center;
+      font-size: 20px;
+      color: var(--medium-gray);
+      margin-bottom: 48px;
+    }
+    
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+    
+    .option-card {
+      background-color: white;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+    
+    .option-card.featured {
+      border: 2px solid var(--primary-color);
+      transform: scale(1.02);
+    }
+    
+    .badge {
+      position: absolute;
+      top: -10px;
+      right: 24px;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    .option-card h2 {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    
+    .option-card p {
+      color: var(--medium-gray);
+      margin-bottom: 24px;
+    }
+    
+    .option-card ul {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+    
+    .option-card ul li {
+      padding: 8px 0;
+      position: relative;
+      padding-left: 24px;
+    }
+    
+    .option-card ul li:before {
+      content: "✓";
+      color: var(--primary-color);
+      position: absolute;
+      left: 0;
+    }
+    
+    .cta-button {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.2s ease;
+    }
+    
+    .cta-button:hover {
+      background-color: #005BBB;
+    }
+    
+    .support-message {
+      text-align: center;
+      margin-top: 32px;
+      padding: 24px;
+      border-radius: 8px;
+      background-color: rgba(0, 113, 227, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+      .option-card.featured {
+        transform: none;
+      }
+    }
+  </style>
+</body>
+</html> 

@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brief.url | Less link. More impact.</title>
+  <style>
+    :root {
+      --primary-color: #0071E3;
+      --light-gray: #F5F5F7;
+      --medium-gray: #86868B;
+      --dark-gray: #1D1D1F;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    body {
+      background-color: white;
+      color: var(--dark-gray);
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      overflow: hidden;
+    }
+    
+    header {
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark-gray);
+      text-decoration: none;
+    }
+    
+    .logo span {
+      color: var(--primary-color);
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+    
+    nav ul li {
+      margin-left: 32px;
+    }
+    
+    nav ul li a {
+      color: var(--dark-gray);
+      text-decoration: none;
+      font-size: 16px;
+      transition: color 0.2s ease;
+    }
+    
+    nav ul li a:hover {
+      color: var(--primary-color);
+    }
+    
+    .hero {
+      height: auto;
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px 24px;
+      width: 100%;
+      overflow: hidden;
+    }
+    
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+      width: 100%;
+      padding: 0 15px;
+      max-width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    .hero p {
+      font-size: 20px;
+      color: var(--medium-gray);
+      margin-bottom: 48px;
+      max-width: 600px;
+      padding: 0 15px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    .url-input-container {
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+    }
+    
+    .url-input {
+      width: 100%;
+      padding: 20px;
+      font-size: 18px;
+      border-radius: 12px;
+      border: 1px solid var(--light-gray);
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .url-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.1);
+    }
+    
+    .shorten-button {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      padding: 12px 24px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    
+    .shorten-button:hover {
+      background-color: #005BBB;
+    }
+    
+    .result-container {
+      margin-top: 32px;
+      width: 100%;
+      max-width: 600px;
+      padding: 24px;
+      background-color: var(--light-gray);
+      border-radius: 12px;
+      display: none;
+    }
+    
+    .result-container.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .result-title {
+      color: var(--medium-gray);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    
+    .result-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 30px;
+      margin-top: 16px;
+    }
+    
+    .result-url {
+      flex: 1;
+      background-color: white;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
+    }
+    
+    .short-url {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--primary-color);
+      word-break: break-all;
+      width: 100%;
+      display: block;
+    }
+    
+    .copy-button {
+      background-color: #34c759;
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+    }
+    
+    .copy-button:hover {
+      background-color: #30b352;
+    }
+    
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: white;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      width: 180px;
+      min-width: 180px;
+    }
+    
+    #qrcode {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    #qrcode img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+    
+    .qr-title {
+      font-size: 14px;
+      color: var(--medium-gray);
+      margin: 6px 0;
+      text-align: center;
+    }
+    
+    .download-button {
+      background-color: #34c759;
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: -45px;
+      margin-bottom: 10px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+    }
+    
+    .download-button:hover {
+      background-color: #30b352;
+    }
+    
+    .features {
+      padding: 96px 0;
+      background-color: var(--light-gray);
+    }
+    
+    .features-title {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 64px;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+    }
+    
+    .feature-card {
+      background-color: white;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background-color: rgba(0, 113, 227, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    
+    .feature-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--primary-color);
+    }
+    
+    .feature-title {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    
+    .feature-description {
+      color: var(--medium-gray);
+      font-size: 16px;
+    }
+    
+    footer {
+      padding: 64px 0;
+      border-top: 1px solid var(--light-gray);
+    }
+    
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    
+    .footer-logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark-gray);
+      margin-bottom: 16px;
+      display: block;
+    }
+    
+    .footer-logo span {
+      color: var(--primary-color);
+    }
+    
+    .footer-description {
+      max-width: 300px;
+      color: var(--medium-gray);
+      font-size: 14px;
+    }
+    
+    .footer-links {
+      display: flex;
+    }
+    
+    .footer-column {
+      margin-left: 64px;
+    }
+    
+    .footer-column h3 {
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .footer-column ul {
+      list-style: none;
+    }
+    
+    .footer-column ul li {
+      margin-bottom: 12px;
+    }
+    
+    .footer-column ul li a {
+      color: var(--medium-gray);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      font-size: 14px;
+    }
+    
+    .footer-column ul li a:hover {
+      color: var(--primary-color);
+    }
+    
+    .copyright {
+      margin-top: 64px;
+      text-align: center;
+      color: var(--medium-gray);
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 36px;
+      }
+      
+      .hero p {
+        font-size: 18px;
+      }
+      
+      .url-input {
+        padding: 16px;
+        font-size: 16px;
+      }
+      
+      .shorten-button {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+      
+      .footer-content {
+        flex-direction: column;
+      }
+      
+      .footer-links {
+        margin-top: 32px;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+      
+      .footer-column {
+        margin-left: 0;
+        margin-right: 32px;
+        margin-bottom: 32px;
+        min-width: 120px;
+      }
+      
+      .result-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+      
+      .result-url {
+        width: 100%;
+      }
+      
+      .qr-container {
+        width: 100%;
+        max-width: 200px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .hero {
+        height: auto;
+        padding: 40px 16px;
+      }
+      
+      .hero h1 {
+        font-size: 32px;
+      }
+      
+      .url-input-container {
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .url-input {
+        width: 100%;
+        margin-bottom: 16px;
+      }
+      
+      .shorten-button {
+        position: static;
+        width: 100%;
+        margin-top: 8px;
+      }
+      
+      .result-container {
+        padding: 16px;
+      }
+      
+      .footer-column {
+        width: 100%;
+        margin-right: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="#" class="logo">Brief<span>.</span>url</a>
+      <nav>
+        <ul>
+          <li><a href="#features" onclick="event.preventDefault(); document.querySelector('#features').scrollIntoView({behavior: 'smooth'})">Features</a></li>
+          <li><a href="./enterprise.html">Pricing</a></li>
+          <li><a href="./enterprise.html">API</a></li>
+          <!-- <li><a href="#index">Login</a></li> -->
+        </ul>
+      </nav>
+    </header>
+  </div>
+  
+  <section class="hero">
+    <h1>Less link. More impact.</h1>
+    <p>Create shorter, more memorable links with our sleek, simple URL shortener.</p>
+    
+    <div class="url-input-container">
+      <input type="text" class="url-input" placeholder="Paste your long URL here..." aria-label="Enter URL to shorten">
+      <button class="shorten-button">Shorten</button>
+    </div>
+    
+    <div class="result-container" id="result">
+      <p class="result-title">Your shortened URL <br>Thank you for using brief.url</p>
+      <div class="result-content">
+      <div class="result-url">
+        <span class="short-url"></span>
+        <button class="copy-button">Copy</button>
+        </div>
+        <div class="qr-container">
+          <div id="qrcode"></div>
+          <p class="qr-title">Your QR</p>
+          <button class="download-button">Download QR</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <br>
+  <section class="features" id="features">
+    <div class="container">
+      <h2 class="features-title">Why Choose Brief.url</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.9999 1.5C6.20147 1.5 1.49994 6.20152 1.49994 12C1.49994 17.7985 6.20147 22.5 11.9999 22.5C17.7984 22.5 22.4999 17.7985 22.4999 12C22.4999 6.20152 17.7984 1.5 11.9999 1.5ZM15.1014 12.7509L10.5014 16.6509C10.2111 16.895 9.78878 16.895 9.49852 16.6509C9.20826 16.4068 9.20826 16.0428 9.49852 15.7986L13.4971 12.375L9.49852 8.95139C9.20826 8.70727 9.20826 8.34322 9.49852 8.09911C9.78878 7.85499 10.2111 7.85499 10.5014 8.09911L15.1014 11.9991C15.3916 12.2432 15.3916 12.6068 15.1014 12.7509Z"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Lightning Fast</h3>
+          <p class="feature-description">Our advanced infrastructure ensures your links are shortened and delivered in milliseconds.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19.5 10.5H18V7.5C18 5.01472 15.9853 3 13.5 3H10.5C8.01472 3 6 5.01472 6 7.5V10.5H4.5C3.67157 10.5 3 11.1716 3 12V19.5C3 20.3284 3.67157 21 4.5 21H19.5C20.3284 21 21 20.3284 21 19.5V12C21 11.1716 20.3284 10.5 19.5 10.5ZM7.5 7.5C7.5 5.84315 8.84315 4.5 10.5 4.5H13.5C15.1569 4.5 16.5 5.84315 16.5 7.5V10.5H7.5V7.5ZM12 16.5C11.1716 16.5 10.5 15.8284 10.5 15C10.5 14.1716 11.1716 13.5 12 13.5C12.8284 13.5 13.5 14.1716 13.5 15C13.5 15.8284 12.8284 16.5 12 16.5Z"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Secure & Private</h3>
+          <p class="feature-description">We prioritize your privacy and never sell your data. All links are secure and encrypted.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4.5 12H19.5M19.5 12L12.75 5.25M19.5 12L12.75 18.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Powerful Analytics</h3>
+          <p class="feature-description">Track clicks, referrers, and geographic data with our intuitive analytics dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-info">
+          <span class="footer-logo">Brief<span>.</span>url</span>
+          <p class="footer-description">Brief.url is a modern URL shortening service focused on simplicity, speed, and elegance.</p>
+        </div>
+        
+        <div class="footer-links">
+          <div class="footer-column">
+            <h3>Product</h3>
+            <ul>
+              <li><a href="/#features">Features</a></li>
+              <li><a href="/payment.html">Pricing</a></li>
+              <li><a href="/payment.html">API</a></li>
+              <li><a href="/payment.html">Enterprise</a></li>
+            </ul>
+          </div>
+          
+          <div class="footer-column">
+            <h3>Company</h3>
+            <ul>
+              <li><a href="/about.html">About</a></li>
+              <li><a href="/blog.html">Blog</a></li>
+              <li><a href="/careers.html">Careers</a></li>
+              <li><a href="/contact.html">Contact</a></li>
+            </ul>
+          </div>
+          
+          <div class="footer-column">
+            <h3>Resources</h3>
+            <ul>
+              <li><a href="/contact.html">Help Center</a></li>
+              <li><a href="/developers.html">Developers</a></li>
+            </ul>
+          </div>
+          
+          <div class="footer-column">
+            <h3>Legal</h3>
+            <ul>
+              <li><a href="/legal.html#privacy">Privacy Policy</a></li>
+              <li><a href="/legal.html#terms">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <p class="copyright">&copy; 2023 Brief.url. All rights reserved.</p>
+    </div>
+  </footer>
+  
+  <!-- Link to frontend script -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlInput = document.querySelector('.url-input');
+      const shortenButton = document.querySelector('.shorten-button');
+      const resultContainer = document.querySelector('.result-container');
+      const shortUrlSpan = document.querySelector('.short-url');
+      const copyButton = document.querySelector('.copy-button');
+      const qrCodeDiv = document.getElementById('qrcode');
+      const downloadButton = document.querySelector('.download-button');
+
+      // Handle URL shortening
+      shortenButton.addEventListener('click', async (event) => {
+        event.preventDefault(); // Prevent form submission
+        
+        const longUrl = urlInput.value.trim();
+        
+        // Add better URL validation
+        if (!longUrl) {
+          alert('Please enter a URL');
+          return;
+        }
+
+        // Add URL protocol if missing
+        let urlToShorten = longUrl;
+        if (!urlToShorten.startsWith('http://') && !urlToShorten.startsWith('https://')) {
+          urlToShorten = 'https://' + urlToShorten;
+        }
+
+        try {
+          // Add logging to debug the request
+          console.log('Sending URL:', urlToShorten);
+          
+          const response = await fetch('/api/shorten', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: urlToShorten }),
+          });
+
+          // Log the response for debugging
+          console.log('Response status:', response.status);
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Response data:', data);
+            
+            const shortUrl = data.shortUrl;
+            shortUrlSpan.textContent = shortUrl;
+            
+            // Generate QR code
+            generateQRCode(shortUrl);
+            
+            resultContainer.classList.add('active');
+          } else {
+            const errorData = await response.json();
+            console.error('Error response:', errorData);
+            alert('Error shortening URL: ' + (errorData.error || 'Unknown error'));
+          }
+        } catch (error) {
+          alert('Error shortening URL. Please try again.');
+          console.error('Error:', error);
+        }
+      });
+
+      // Improve QR code generation to handle sizing better
+      function generateQRCode(url) {
+        // Clear previous QR code
+        qrCodeDiv.innerHTML = '';
+        
+        // Generate QR code with appropriate size
+        const qr = qrcode(0, 'M');
+        qr.addData(url);
+        qr.make();
+        
+        // Create QR code image with controlled size
+        const qrImage = qr.createImgTag(4); // Slightly smaller size (4 instead of 5)
+        qrCodeDiv.innerHTML = qrImage;
+        
+        // Ensure the image is responsive
+        const qrImg = qrCodeDiv.querySelector('img');
+        if (qrImg) {
+          qrImg.style.maxWidth = '100%';
+          qrImg.style.height = 'auto';
+        }
+        
+        // Update download button
+        if (downloadButton) {
+          downloadButton.onclick = () => downloadQRCode(url);
+        }
+      }
+      
+      // Function to download QR code
+      function downloadQRCode(url) {
+        const canvas = document.createElement('canvas');
+        const size = 200; // QR code size
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        
+        // Generate QR code for canvas
+        const qr = qrcode(0, 'M');
+        qr.addData(url);
+        qr.make();
+        
+        // Get QR code as image
+        const img = new Image();
+        img.src = qrCodeDiv.querySelector('img').src;
+        
+        img.onload = () => {
+          // Draw QR code on canvas
+          ctx.drawImage(img, 0, 0, size, size);
+          
+          // Create download link
+          const a = document.createElement('a');
+          a.download = 'qrcode.png';
+          a.href = canvas.toDataURL('image/png');
+          a.click();
+        };
+      }
+
+      // Handle copy button
+      if (copyButton) {
+        copyButton.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(shortUrlSpan.textContent);
+            copyButton.textContent = 'Copied!';
+            setTimeout(() => {
+              copyButton.textContent = 'Copy';
+            }, 2000);
+          } catch (error) {
+            alert('Failed to copy URL');
+            console.error('Error:', error);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
