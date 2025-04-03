@@ -23,98 +23,220 @@ const Url = mongoose.model('Url', urlSchema);
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// Set EJS as the templating engine
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+// Fallback in-memory storage in case MongoDB fails
+const urlDatabase = {};
 
-// MongoDB Connection Handling
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
+// Log all requests
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
 });
 
-mongoose.connection.on('connected', () => console.log('✅ MongoDB Connected'));
-mongoose.connection.on('error', err => console.error('❌ MongoDB Connection Error:', err));
-mongoose.connection.on('disconnected', () => console.log('⚠️ Disconnected from MongoDB'));
+// Determine the static files directory based on environment
+const staticDir = process.env.NODE_ENV === 'production' ? 'public' : 'public';
+console.log('Static directory:', path.join(__dirname, staticDir));
+app.use(express.static(path.join(__dirname, staticDir)));
 
-// Homepage Route
-app.get('/', (req, res) => {
-  res.render('index');
+// MongoDB connection state
+let isConnectedToMongo = false;
+
+// Connect to MongoDB with better error handling
+console.log('Attempting to connect to MongoDB...');
+const redactedUri = MONGODB_URI.includes('@') 
+  ? MONGODB_URI.replace(/\/\/[^:]+:[^@]+@/, '//<credentials>@') 
+  : MONGODB_URI;
+console.log('MongoDB URI:', redactedUri);
+
+mongoose.connection.on('connected', () => {
+  console.log('Successfully connected to MongoDB');
+  isConnectedToMongo = true;
 });
 
-// Shorten URL Route
-app.post('/shorten', async (req, res) => {
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', {
+    name: err.name,
+    message: err.message,
+    code: err.code
+  });
+  isConnectedToMongo = false;
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Disconnected from MongoDB');
+  isConnectedToMongo = false;
+});
+
+// Connect with retries
+const connectWithRetry = async () => {
   try {
-    let { url } = req.body;
-
-    if (!url) return res.render('index', { error: 'Please provide a URL' });
-
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://' + url;
-    }
-
-    const shortId = nanoid(6);
-    const newUrl = new Url({ shortId, originalUrl: url });
-    await newUrl.save();
-
-    const shortUrl = `${req.protocol}://${req.get('host')}/${shortId}`;
-    res.render('index', { shortUrl });
-  } catch (error) {
-    console.error('Error shortening URL:', error);
-    res.render('index', { error: 'Server error. Please try again.' });
+    await mongoose.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+  } catch (err) {
+    console.error('MongoDB connection failed, retrying in 5 seconds...', err.message);
+    setTimeout(connectWithRetry, 5000);
   }
+};
+
+connectWithRetry();
+
+// Routes
+app.get('/', (req, res) => {
+  const indexPath = path.join(__dirname, staticDir, 'index.html');
+  console.log('Serving index.html from:', indexPath);
+  res.sendFile(indexPath, err => {
+    if (err) {
+      console.error('Error sending index.html:', err);
+      res.status(500).send('Error serving the file. Please try again.');
+    }
+  });
 });
 
-// API Shorten Endpoint
 app.post('/api/shorten', async (req, res) => {
   try {
+    console.log('API Request body:', req.body);
     let { url } = req.body;
 
-    if (!url) return res.status(400).json({ error: 'Please provide a URL' });
+    if (!url) {
+      console.log('No URL provided');
+      return res.status(400).json({ error: 'Please provide a URL' });
+    }
 
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = 'https://' + url;
     }
 
     const shortId = nanoid(6);
-    const newUrl = new Url({ shortId, originalUrl: url });
-    await newUrl.save();
+    console.log('Generated shortId:', shortId);
+    
+    // Store URL in both MongoDB and in-memory database as fallback
+    if (isConnectedToMongo) {
+      try {
+        const newUrl = new Url({
+          shortId,
+          originalUrl: url
+        });
+        
+        console.log('Attempting to save URL to MongoDB...');
+        await newUrl.save();
+        console.log('Successfully saved URL to MongoDB');
+      } catch (dbError) {
+        console.error('Failed to save to MongoDB, using in-memory storage:', dbError.message);
+        // Fall back to in-memory storage
+        urlDatabase[shortId] = {
+          originalUrl: url,
+          clicks: 0,
+          createdAt: new Date()
+        };
+        console.log('Saved URL to in-memory storage');
+      }
+    } else {
+      // Use in-memory storage if MongoDB is not connected
+      urlDatabase[shortId] = {
+        originalUrl: url,
+        clicks: 0,
+        createdAt: new Date()
+      };
+      console.log('Saved URL to in-memory storage (MongoDB not available)');
+    }
 
     const shortUrl = `${req.protocol}://${req.get('host')}/${shortId}`;
-    res.json({ shortUrl });
+    console.log('Generated shortUrl:', shortUrl);
+    
+    return res.json({ shortUrl });
   } catch (error) {
-    console.error('Error shortening URL:', error);
-    res.status(500).json({ error: 'Server error. Please try again.' });
+    console.error('Error shortening URL:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
+    return res.status(500).json({ 
+      error: 'Server error. Please try again.',
+      details: error.message 
+    });
   }
 });
 
-// Redirect Route
-app.get('/:shortId', async (req, res) => {
+// Redirect route
+app.get('/:shortId', async (req, res, next) => {
   try {
     const { shortId } = req.params;
-    const urlData = await Url.findOne({ shortId });
+    console.log('Redirect request for shortId:', shortId);
+    
+    // Don't try to redirect static file requests
+    if (shortId.includes('.')) {
+      console.log('Static file request detected, passing to next handler');
+      return next();
+    }
 
-    if (!urlData) return res.status(404).render('index', { error: 'URL not found' });
+    let originalUrl = null;
 
-    urlData.clicks += 1;
-    await urlData.save();
+    // Try to find URL in MongoDB first
+    if (isConnectedToMongo) {
+      try {
+        console.log('Looking up URL in MongoDB...');
+        const urlData = await Url.findOne({ shortId });
 
-    res.redirect(urlData.originalUrl);
+        if (urlData) {
+          console.log('Found URL in MongoDB:', urlData.originalUrl);
+          // Increment clicks
+          urlData.clicks += 1;
+          await urlData.save();
+          originalUrl = urlData.originalUrl;
+        }
+      } catch (dbError) {
+        console.error('Error querying MongoDB:', dbError.message);
+        // Continue to in-memory fallback
+      }
+    }
+
+    // If not found in MongoDB, check in-memory database
+    if (!originalUrl && urlDatabase[shortId]) {
+      console.log('Found URL in in-memory database:', urlDatabase[shortId].originalUrl);
+      urlDatabase[shortId].clicks += 1;
+      originalUrl = urlDatabase[shortId].originalUrl;
+    }
+
+    if (!originalUrl) {
+      console.log('URL not found:', shortId);
+      return res.status(404).sendFile(path.join(__dirname, staticDir, 'index.html'));
+    }
+    
+    console.log('Redirecting to:', originalUrl);
+    return res.redirect(originalUrl);
   } catch (error) {
-    console.error('Error redirecting:', error);
-    res.render('index', { error: 'Server error' });
+    console.error('Error redirecting:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
+    res.status(500).sendFile(path.join(__dirname, staticDir, 'index.html'));
   }
 });
 
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.error('Server error:', err);
-  res.status(500).render('index', { error: 'Server error. Please try again.' });
+// Handle 404 errors
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, staticDir, 'index.html'));
 });
 
-// Start Server
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Server error:', {
+    name: err.name,
+    message: err.message,
+    stack: err.stack
+  });
+  res.status(500).json({ 
+    error: 'Server error. Please try again.',
+    details: err.message 
+  });
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
