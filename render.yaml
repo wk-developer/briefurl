@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: briefurl
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        sync: false # This means it needs to be set manually in Render dashboard
+    autoDeploy: true
+    plan: free
+    branch: main 
