@@ -2,14 +2,25 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const { nanoid } = require('nanoid');
+const mongoose = require('mongoose');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/briefurl';
 
-// In-memory storage for URLs (temporary solution)
-const urlDatabase = {};
+// MongoDB Schema
+const urlSchema = new mongoose.Schema({
+  shortId: String,
+  originalUrl: String,
+  clicks: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Url = mongoose.model('Url', urlSchema);
 
 // Middleware
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -17,6 +28,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Set EJS as templating engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// Connect to MongoDB
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
 app.get('/', (req, res) => {
@@ -32,7 +48,6 @@ app.post('/shorten', async (req, res) => {
     // Basic URL validation
     if (!url) {
       console.log('No URL provided');
-      // Check if this is an API request or a form submission
       const wantsJson = req.headers['content-type'] === 'application/json';
       
       if (wantsJson) {
@@ -50,19 +65,18 @@ app.post('/shorten', async (req, res) => {
     // Generate short ID
     const shortId = nanoid(6);
     
-    // Store in memory
-    urlDatabase[shortId] = {
-      originalUrl: url,
-      clicks: 0,
-      createdAt: new Date()
-    };
+    // Store in MongoDB
+    const newUrl = new Url({
+      shortId,
+      originalUrl: url
+    });
+    await newUrl.save();
 
     console.log('Created short URL:', shortId, 'for', url);
 
     // Construct the short URL
     const shortUrl = `${req.protocol}://${req.get('host')}/${shortId}`;
     
-    // Check if this is an API request or a form submission
     const wantsJson = req.headers['content-type'] === 'application/json';
     
     if (wantsJson) {
@@ -73,7 +87,6 @@ app.post('/shorten', async (req, res) => {
   } catch (error) {
     console.error('Error shortening URL:', error);
     
-    // Check if this is an API request or a form submission
     const wantsJson = req.headers['content-type'] === 'application/json';
     
     if (wantsJson) {
@@ -90,30 +103,25 @@ app.post('/api/shorten', async (req, res) => {
     console.log('API Request body:', req.body);
     let { url } = req.body;
 
-    // Basic URL validation
     if (!url) {
       console.log('No URL provided');
       return res.status(400).json({ error: 'Please provide a URL' });
     }
 
-    // Add protocol if missing
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = 'https://' + url;
     }
 
-    // Generate short ID
     const shortId = nanoid(6);
     
-    // Store in memory
-    urlDatabase[shortId] = {
-      originalUrl: url,
-      clicks: 0,
-      createdAt: new Date()
-    };
+    const newUrl = new Url({
+      shortId,
+      originalUrl: url
+    });
+    await newUrl.save();
 
     console.log('Created short URL:', shortId, 'for', url);
 
-    // Construct the short URL
     const shortUrl = `${req.protocol}://${req.get('host')}/${shortId}`;
     
     return res.json({ shortUrl });
@@ -124,10 +132,10 @@ app.post('/api/shorten', async (req, res) => {
 });
 
 // Redirect route
-app.get('/:shortId', (req, res) => {
+app.get('/:shortId', async (req, res) => {
   try {
     const { shortId } = req.params;
-    const urlData = urlDatabase[shortId];
+    const urlData = await Url.findOne({ shortId });
 
     if (!urlData) {
       console.log('URL not found:', shortId);
@@ -136,6 +144,7 @@ app.get('/:shortId', (req, res) => {
 
     // Increment clicks
     urlData.clicks += 1;
+    await urlData.save();
     
     console.log('Redirecting to:', urlData.originalUrl);
     res.redirect(urlData.originalUrl);
