@@ -34,24 +34,57 @@ app.use((req, res, next) => {
 console.log('Static directory:', path.join(__dirname, 'docs'));
 app.use(express.static(path.join(__dirname, 'docs')));
 
+// MongoDB connection state
+let isConnectedToMongo = false;
+
 // Connect to MongoDB with better error handling
 console.log('Attempting to connect to MongoDB...');
 console.log('MongoDB URI:', MONGODB_URI.replace(/\/\/[^:]+:[^@]+@/, '//<credentials>@')); // Log URI without credentials
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => {
+
+mongoose.connection.on('connected', () => {
   console.log('Successfully connected to MongoDB');
-})
-.catch(err => {
-  console.error('MongoDB connection error details:', {
+  isConnectedToMongo = true;
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', {
     name: err.name,
     message: err.message,
-    code: err.code,
-    stack: err.stack
+    code: err.code
   });
-  process.exit(1);
+  isConnectedToMongo = false;
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Disconnected from MongoDB');
+  isConnectedToMongo = false;
+});
+
+// Connect with retries
+const connectWithRetry = async () => {
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds
+      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    });
+  } catch (err) {
+    console.error('MongoDB connection failed, retrying in 5 seconds...');
+    setTimeout(connectWithRetry, 5000);
+  }
+};
+
+connectWithRetry();
+
+// Middleware to check MongoDB connection
+app.use((req, res, next) => {
+  if (!isConnectedToMongo && !req.path.includes('.')) {
+    return res.status(503).json({ 
+      error: 'Database connection is not ready. Please try again in a moment.' 
+    });
+  }
+  next();
 });
 
 // Routes
@@ -67,6 +100,12 @@ app.get('/', (req, res) => {
 
 app.post('/api/shorten', async (req, res) => {
   try {
+    if (!isConnectedToMongo) {
+      return res.status(503).json({ 
+        error: 'Database connection is not ready. Please try again in a moment.' 
+      });
+    }
+
     console.log('API Request body:', req.body);
     let { url } = req.body;
 
@@ -102,7 +141,10 @@ app.post('/api/shorten', async (req, res) => {
       code: error.code,
       stack: error.stack
     });
-    return res.status(500).json({ error: 'Server error. Please try again.' });
+    return res.status(500).json({ 
+      error: 'Server error. Please try again.',
+      details: error.message 
+    });
   }
 });
 
@@ -116,6 +158,12 @@ app.get('/:shortId', async (req, res, next) => {
     if (shortId.includes('.')) {
       console.log('Static file request detected, passing to next handler');
       return next();
+    }
+
+    if (!isConnectedToMongo) {
+      return res.status(503).json({ 
+        error: 'Database connection is not ready. Please try again in a moment.' 
+      });
     }
 
     console.log('Looking up URL in MongoDB...');
@@ -152,7 +200,10 @@ app.use((err, req, res, next) => {
     code: err.code,
     stack: err.stack
   });
-  res.status(500).json({ error: 'Server error. Please try again.' });
+  res.status(500).json({ 
+    error: 'Server error. Please try again.',
+    details: err.message 
+  });
 });
 
 // Start server

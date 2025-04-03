@@ -1,4 +1,4 @@
-const API_URL = 'https://your-render-app-name.onrender.com'; // Replace with your actual Render.com URL
+const API_URL = 'https://briefurl.onrender.com'; // Your Render.com URL
 
 async function shortenUrl(url) {
     try {
@@ -9,7 +9,15 @@ async function shortenUrl(url) {
             },
             body: JSON.stringify({ url })
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.shortUrl;
     } catch (error) {
         console.error('Error shortening URL:', error);
+        throw error;
     }
 } 
